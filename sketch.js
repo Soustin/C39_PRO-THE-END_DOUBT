@@ -2,7 +2,7 @@ var PLAY = 1;
 var END = 0;
 var gameState = PLAY;
 
-var trex, trex_running, trex_collided;
+var trex, trex_running, trex_collided, trexCollided_Img;
 var ground, invisibleGround, groundImage;
 
 var cloudsGroup, cloudImage;
@@ -16,8 +16,9 @@ var backGround, backGroundImg;
 function preload(){
   trex_running = loadAnimation("Dino_Running_1.png", "Dino_Running_2.png", "Dino_Running_3png.png", "Dino_Running_4.png", "Dino_Running_5.png", "Dino_Running_6.png");
   trex_collided = loadAnimation("Dino_Collided_1.png", "Dino_Collided_2.png", "Dino_Collided_3.png", "Dino_Collided_4.png", "Dino_Collided_5.png");
-  
-  groundImage = loadImage("ground2.png");
+  trex_collided_Img = loadAnimation("Dino_Collided_5.png");
+
+  // groundImage = loadImage("Desert-Ground_1.png");
   
   cloudImage = loadImage("cloud.png");
   
@@ -36,8 +37,8 @@ function preload(){
   jumpSound = loadSound("jump.mp3");
   dieSound = loadSound("die.mp3");
   checkPointSound = loadSound("checkPoint.mp3");
-  gameOvrSound1 = loadSound("mixkit-sad-game-over-trombone-471.wav");
-  gameOvrSound1 = loadSound("mixkit-spooky-game-over-1948.wav")
+  // gameOvrSound1 = loadSound("mixkit-sad-game-over-trombone-471.wav");
+  // gameOvrSound2 = loadSound("mixkit-spooky-game-over-1948.wav")
   // trexSound = loadSound("TrexSoundMix.mp3");
 }
 
@@ -54,13 +55,15 @@ function setup() {
   trex = createSprite(50,160,20,50);
   trex.addAnimation("running", trex_running);
   trex.addAnimation("collided", trex_collided);
+  trex.changeAnimation("collided image", trexCollided_Img);
   trex.velocityX = 10;
   
 
   trex.scale = 0.8;
   
-  ground = createSprite(width/6, height-50, windowWidth, 20);
-  ground.addImage("ground",groundImage);
+  // ground = createSprite(width/6, height-50, windowWidth, 20);
+  // ground.addImage("ground",groundImage);
+  // ground.scale = 7;
   // ground.x = ground.width /2;
   
   gameOver = createSprite(width/4, height-250, 25, 25);
@@ -97,6 +100,8 @@ function setup() {
 function draw() {
   
   background(180);
+
+  // trexSound.play();
   
   // trexSound.loop();
 
@@ -104,9 +109,8 @@ function draw() {
   
   if(gameState === PLAY){
 
-    push();
-    camera.position.x = trex.x;
-    pop();
+    camera.position.x = trex.x, gameOver.x, restart.x;
+ 
     // camera.position.y = displayHeight/2; 
 
     trex.setAnimation("running", trex_running);
@@ -114,7 +118,7 @@ function draw() {
     gameOver.visible = false;
     restart.visible = false;
     
-    ground.velocityX = -(4 + 3* score/100)
+    // ground.velocityX = -(4 + 3* score/100)
 
     // gameOver.velocityX = -4;
     // restart.velocityX = -4;
@@ -125,9 +129,9 @@ function draw() {
        checkPointSound.play() 
     }
 
-    if (ground.x < camera.position.x){
-      ground.x = camera.position.x+200;
-    }
+    // if (ground.x < camera.position.x){
+    //   ground.x = camera.position.x+200;
+    // }
 
     if (invisibleGround.x < camera.position.x){
       invisibleGround.x = camera.position.x+200;
@@ -145,9 +149,9 @@ function draw() {
     //   restart.x = camera.position.x+10;
     // }
     
-    if (ground.x < 0){
-      ground.x = ground.width/2;
-    }
+    // if (ground.x < 0){
+    //   ground.x = ground.width/2;
+    // }
     
     //jump when the space key is pressed
     if(keyDown("space")&& trex.y >= 100) {
@@ -166,13 +170,13 @@ function draw() {
     
     if(obstaclesGroup.isTouching(trex)){
         //trex.velocityY = -12;
-        jumpSound.play();
         gameState = END;
-        dieSound.play();
+        // gameOvrSound1.play();
         trex.changeAnimation("collided", trex_collided);
     }
   }
-   else if (gameState === END) {
+    if (gameState === END) {
+
       gameOver.visible = true;
       restart.visible = true;
 
@@ -181,13 +185,15 @@ function draw() {
 
       // trex.x != camera.position.x;
       // trex.x = windowWidth/2;
+      trex.velocityX = 0;
      
      //change the trex animation
       trex.changeAnimation("collided", trex_collided);
+      // trex.changeAnimation(trex_collided_Img);
 
-      gameOvrSound1.play();
+      // gameOvrSound1.play();
      
-      ground.velocityX = 0;
+      // ground.velocityX = 0;
       // trex.velocityY = 0
       
      
